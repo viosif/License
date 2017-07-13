@@ -14,6 +14,8 @@ import com.fortech.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController    // This means that this class is a Controller
 @RequestMapping(value = "/license") // This means URL's start with /demo (after Application path)
@@ -44,7 +46,7 @@ public class LicenseController {
     }
 
     @RequestMapping(path = "/getAllLicenseByEmail", method = RequestMethod.GET)
-    public License getAllLicenseByEmail(@RequestParam("email") String email) {
+    public List<License> getAllLicenseByEmail(@RequestParam("email") String email) {
         return licenseRepository.findAllEmail(email);
     }
 
