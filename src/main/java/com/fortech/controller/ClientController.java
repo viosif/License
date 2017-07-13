@@ -7,7 +7,6 @@ import com.fortech.repository.LicenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,7 +29,6 @@ public class ClientController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public Client createClient(@RequestBody Client client) {
-        client.setCreated(new Date());
         clientRepository.save(client);
         return client;
     }
@@ -65,14 +63,20 @@ public class ClientController {
     }
 
     @RequestMapping(path = "/deleteLicenseFromClient", method = RequestMethod.DELETE)
-    public Client deleteLicenseFromClient(@RequestParam("licenseKey") String licenseKey, @RequestParam("clientId") String clientId) {
-        //Client client = clientRepository.findOne(Long.valueOf(clientId));
-        //List<License> licenses = client.getLicense();
-        //licenses.remove(license);
-        //client.setLicense(licenses);
-        //clientRepository.save(client);
-        //licenseRepository.deleteByLicenseKey(license.getLicenseKey());
-        return null;//client;
+    public Client deleteLicenseFromClient(@RequestParam("clientId") String clientId,@RequestParam("licenseKey") String licenseKey) {
+
+        Client client = clientRepository.findOne(Long.valueOf(clientId));
+        List<License> licenses = client.getLicense();
+        License toDelete=null;
+        for(License license : licenses)
+            if (license.getLicenseKey().equals(licenseKey))
+                toDelete = license;
+
+        licenses.remove(toDelete);
+        client.setLicense(licenses);
+        licenseRepository.deleteByLicenseKey(toDelete.getLicenseKey());
+        clientRepository.save(client);
+        return client;
     }
 
 

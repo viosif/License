@@ -11,8 +11,10 @@ import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -40,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
-//@FixMethodOrder(MethodSorters.JVM)
+@FixMethodOrder(MethodSorters.JVM)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class LicenseControllerIntegrationTest {
 
@@ -90,7 +92,10 @@ public class LicenseControllerIntegrationTest {
                 .webAppContextSetup(this.wac)
                 .apply(springSecurity(springSecurityFilterChain))
                 .build();
+        initRepository();
+    }
 
+    void initRepository(){
         this.licenseRepository.deleteAll();
         this.clientRepository.deleteAll();
 

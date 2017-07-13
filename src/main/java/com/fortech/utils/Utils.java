@@ -11,11 +11,13 @@ public class Utils {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
-        while (salt.length() < 20) { // length of the random string.
+        while (salt.length() < 23) { // length of the random string.
             int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            if(salt.length()%5==0 && salt.length()!=0)
+
+            if (salt.length() == 5 || salt.length() == 11 || salt.length() == 17)
                 salt.append("-");
-            salt.append(SALTCHARS.charAt(index));
+            else
+                salt.append(SALTCHARS.charAt(index));
         }
         String saltStr = salt.toString();
         return saltStr;

@@ -2,6 +2,7 @@ package com.fortech.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,23 +35,21 @@ public class Client {
     @Column(name = "email", unique = true)
     private String email;
 
-    @NotNull
     @Column(name = "created")
-    private Date created;
+    private Date created = new Date();
 
     @OneToMany
     @JoinColumn(name = "license_id")
-    private List<License> license;
+    private List<License> license = new ArrayList<>();
 
     public Client() {
     }
 
-    public Client(String name, String surname, int age, String email, Date created, List<License> license) {
+    public Client(String name, String surname, int age, String email, List<License> license) {
         this.name = name;
         this.surname = surname;
         this.age = age;
         this.email = email;
-        this.created = created;
         this.license = license;
     }
 

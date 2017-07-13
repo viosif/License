@@ -44,6 +44,7 @@ public class LicenseController {
         licenses.add(license);
         client.setLicense(licenses);
         clientRepository.save(client);
+
         return license;
     }
 

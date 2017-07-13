@@ -22,7 +22,6 @@ public class License {
     @Column(name = "licenseType")
     private LicenseType licenseType;
 
-    @NotNull
     @Column(name = "startDate")
     private Date startDate = new Date();
 
@@ -30,7 +29,6 @@ public class License {
     @Column(name = "endDate")
     private Date endDate;
 
-    @NotNull
     @Column(name = "licenseKey", unique = true)
     private String licenseKey;
 
