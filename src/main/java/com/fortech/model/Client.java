@@ -3,49 +3,55 @@ package com.fortech.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by iosifvarga on 07.07.2017.
  */
 @Entity // This tells Hibernate to make a table out of this class
-@Table(name="client")
+@Table(name = "client")
 public class Client {
 
     @Id
     @NotNull
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name="id")
+    @Column(name = "id")
     private long id;
 
     @NotNull
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
     @NotNull
-    @Column(name="surname")
+    @Column(name = "surname")
     private String surname;
 
     @NotNull
-    @Column(name="age")
+    @Column(name = "age")
     private int age;
 
     @NotNull
-    @Column(name="email", unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @NotNull
-    @Column(name="created")
+    @Column(name = "created")
     private Date created;
+
+    @OneToMany
+    @JoinColumn(name = "license_id")
+    private List<License> license;
 
     public Client() {
     }
 
-    public Client(String name, String surname, int age, String email, Date created) {
+    public Client(String name, String surname, int age, String email, Date created, List<License> license) {
         this.name = name;
         this.surname = surname;
         this.age = age;
         this.email = email;
         this.created = created;
+        this.license = license;
     }
 
     @Override
@@ -108,4 +114,11 @@ public class Client {
         this.created = created;
     }
 
+    public List<License> getLicense() {
+        return license;
+    }
+
+    public void setLicense(List<License> license) {
+        this.license = license;
+    }
 }

@@ -4,7 +4,6 @@ package com.fortech.controller;
  * Created by iosifvarga on 28.06.2017.
  */
 
-import com.fortech.model.Client;
 import com.fortech.model.KeyStatus;
 import com.fortech.model.License;
 import com.fortech.model.LicenseType;
@@ -14,7 +13,7 @@ import com.fortech.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Date;
 
 @CrossOrigin
 @RestController    // This means that this class is a Controller
@@ -33,9 +32,9 @@ public class LicenseController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public License createLicense(@RequestBody License license, @RequestParam Long idClient) {
-        Client client = clientRepository.findOne(idClient);
+        //Client client = clientRepository.findOne(idClient);
         license.setLicenseKey(Utils.generateLicenseKey());
-        license.setClient(client);
+        //license.setClient(client);
         licenseRepository.save(license);
         return license;
     }
@@ -43,11 +42,6 @@ public class LicenseController {
     @RequestMapping(path = "/getLicenseByKey", method = RequestMethod.GET)
     public License getLicenseByKey(@RequestParam("licenseKey") String licenseParam) {
         return licenseRepository.findFirstByLicenseKey(licenseParam);
-    }
-
-    @RequestMapping(path = "/getAllLicenseByEmail", method = RequestMethod.GET)
-    public List<License> getAllLicenseByEmail(@RequestParam("email") String email) {
-        return licenseRepository.findAllEmail(email);
     }
 
     @RequestMapping(path = "/changeKeyStatusByLicenseKey", method = RequestMethod.GET)
@@ -62,6 +56,22 @@ public class LicenseController {
     public License changeLicenseTypeByLicenseKey(@RequestParam("licenseKey") String licenseKey, @RequestParam("licenseType")LicenseType licenseType) {
         License license = licenseRepository.findFirstByLicenseKey(licenseKey);
         license.setLicenseType(licenseType);
+        licenseRepository.save(license);
+        return license;
+    }
+
+    @RequestMapping(path = "/changeStartDateByLicenseKey", method = RequestMethod.GET)
+    public License changeStartDateByLicenseKey(@RequestParam("licenseKey") String licenseKey, @RequestParam("startDate")String startDate) {
+        License license = licenseRepository.findFirstByLicenseKey(licenseKey);
+        license.setStartDate(new Date(Long.valueOf(startDate)));
+        licenseRepository.save(license);
+        return license;
+    }
+
+    @RequestMapping(path = "/changeEndDateByLicenseKey", method = RequestMethod.GET)
+    public License changeEndDateByLicenseKey(@RequestParam("licenseKey") String licenseKey, @RequestParam("endDate")String endDate) {
+        License license = licenseRepository.findFirstByLicenseKey(licenseKey);
+        license.setEndDate(new Date(Long.valueOf(endDate)));
         licenseRepository.save(license);
         return license;
     }

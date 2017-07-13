@@ -1,12 +1,14 @@
 package com.fortech.controller;
 
 import com.fortech.model.Client;
+import com.fortech.model.License;
 import com.fortech.repository.ClientRepository;
 import com.fortech.repository.LicenseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by iosifvarga on 07.07.2017.
@@ -33,20 +35,11 @@ public class ClientController {
         return client;
     }
 
-
     @RequestMapping(path = "/deleteByEmail", method = RequestMethod.DELETE)
     public Client deleteClientByEmail(@RequestParam("email") String email) {
         Client client = clientRepository.findFirstByEmail(email);
-        licenseRepository.deleteByClient(client);
+        licenseRepository.delete(client.getLicense());
         clientRepository.deleteByEmail(email);
-
-        //v2
-        //Iterable<License> licenses = licenseRepository.findByClient(clientRepository.findOne(id));
-        //for (License license : licenses) {
-        //    licenseRepository.delete(license.getId());
-        //}
-        //clientRepository.delete(id);
-
         return client;
     }
 
@@ -54,5 +47,11 @@ public class ClientController {
     public Iterable<Client> findByEmail(@RequestParam("email") String email) {
         return clientRepository.findByEmail(email);
     }
+
+    @RequestMapping(path = "/getAllLicenseByEmail", method = RequestMethod.GET)
+    public List<License> getAllLicenseByEmail(@RequestParam("email") String email) {
+        return clientRepository.findFirstByEmail(email).getLicense();
+    }
+
 
 }

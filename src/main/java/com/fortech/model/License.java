@@ -39,20 +39,14 @@ public class License {
     @Column(name = "keyStatus")
     private KeyStatus keyStatus;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
-    private Client client;
-
     public License() {
     }
 
-    public License(LicenseType licenseType, Date startDate, Date endDate, KeyStatus keyStatus, Client client) {
+    public License(LicenseType licenseType, Date startDate, Date endDate, KeyStatus keyStatus) {
         this.licenseType = licenseType;
         this.startDate = startDate;
         this.endDate = endDate;
         this.keyStatus = keyStatus;
-        this.client = client;
     }
 
     @Override
@@ -64,7 +58,6 @@ public class License {
                 ", endDate=" + endDate +
                 ", licenseKey=" + licenseKey +
                 ", keyStatus=" + keyStatus.toString() +
-                ", client=" + client +
                 '}';
     }
 
@@ -114,14 +107,6 @@ public class License {
 
     public void setKeyStatus(KeyStatus keyStatus) {
         this.keyStatus = keyStatus;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
     }
 
 }

@@ -1,6 +1,5 @@
 package com.fortech;
 
-import com.fortech.model.Client;
 import com.fortech.model.KeyStatus;
 import com.fortech.model.License;
 import com.fortech.model.LicenseType;
@@ -20,11 +19,10 @@ public class LicenseTest {
     LicenseType licenseTypeLIFETIME = LicenseType.LIFETIME;
     KeyStatus keyStatus = KeyStatus.KEY_GOOD;
     License license1 ;
-    Client client;
 
     @Before
     public void setup() throws Exception {
-        license1 = new License(licenseTypeLIFETIME,startDate,endDate,keyStatus,client);
+        license1 = new License(licenseTypeLIFETIME,startDate,endDate,keyStatus);
     }
     @Test
     public void getId() throws Exception {
@@ -75,6 +73,7 @@ public class LicenseTest {
 
     @Test
     public void getLicense() throws Exception {
+        license1.setLicenseKey("license1");
         assertEquals("license1",license1.getLicenseKey());
     }
 
@@ -86,13 +85,13 @@ public class LicenseTest {
 
     @Test
     public void getKeyStatus() throws Exception {
-        assertEquals(keyStatus.toString(), license1.getKeyStatus());
+        assertEquals(keyStatus, license1.getKeyStatus());
     }
 
     @Test
     public void setKeyStatus() throws Exception {
         license1.setKeyStatus(KeyStatus.KEY_BLACKLISTED);
-        assertEquals(KeyStatus.KEY_BLACKLISTED.toString(), license1.getKeyStatus());
+        assertEquals(KeyStatus.KEY_BLACKLISTED, license1.getKeyStatus());
     }
 
 }

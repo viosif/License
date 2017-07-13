@@ -8,6 +8,7 @@ import com.fortech.repository.ClientRepository;
 import com.fortech.repository.LicenseRepository;
 import com.fortech.utils.Utils;
 import org.hamcrest.Matchers;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -70,10 +72,10 @@ public class LicenseControllerIntegrationTest {
     private LicenseRepository licenseRepository;
 
     private License license1;
-    private LicenseType licenseType = LicenseType.LIFETIME;
-    private Date startDate = new Date();
-    private Date endDate = new Date();
-    private KeyStatus keyStatus = KeyStatus.KEY_GOOD;
+    private LicenseType licenseType1 = LicenseType.LIFETIME;
+    private Date startDate1 = new Date();
+    private Date endDate1 = new Date();
+    private KeyStatus keyStatus1 = KeyStatus.KEY_GOOD;
     private License license2;
     private LicenseType licenseType2 = LicenseType.TRIAL;
     private Date startDate2 = new Date();
@@ -92,10 +94,6 @@ public class LicenseControllerIntegrationTest {
                 .apply(springSecurity(springSecurityFilterChain))
                 .build();
 
-        initLicenseRepository();
-    }
-
-    public void initLicenseRepository() {
         this.licenseRepository.deleteAll();
         this.clientRepository.deleteAll();
 
@@ -116,12 +114,11 @@ public class LicenseControllerIntegrationTest {
         this.clientRepository.save(this.client2);
 
         this.license1 = new License();
-        this.license1.setLicenseType(licenseType);
-        this.license1.setStartDate(startDate);
-        this.license1.setEndDate(endDate);
+        this.license1.setLicenseType(licenseType1);
+        this.license1.setStartDate(startDate1);
+        this.license1.setEndDate(endDate1);
         this.license1.setLicenseKey(Utils.generateLicenseKey());
-        this.license1.setKeyStatus(keyStatus);
-        this.license1.setClient(client1);
+        this.license1.setKeyStatus(keyStatus1);
         this.licenseRepository.save(this.license1);
 
         this.license2 = new License();
@@ -130,17 +127,27 @@ public class LicenseControllerIntegrationTest {
         this.license2.setEndDate(endDate2);
         this.license2.setLicenseKey(Utils.generateLicenseKey());
         this.license2.setKeyStatus(keyStatus2);
-        this.license2.setClient(client1);
         this.licenseRepository.save(this.license2);
 
         this.license3 = new License();
         this.license3.setLicenseType(licenseType3);
-        this.license3.setStartDate(startDate);
-        this.license3.setEndDate(endDate);
+        this.license3.setStartDate(startDate3);
+        this.license3.setEndDate(endDate3);
         this.license3.setLicenseKey(Utils.generateLicenseKey());
         this.license3.setKeyStatus(keyStatus3);
-        this.license3.setClient(client2);
         this.licenseRepository.save(this.license3);
+
+        List<License> licenses1 = new ArrayList<>();
+        licenses1.add(license1);
+        licenses1.add(license2);
+
+        List<License> licenses2 = new ArrayList<>();
+        licenses2.add(license3);
+
+        client1.setLicense(licenses1);
+        client2.setLicense(licenses2);
+        this.clientRepository.save(this.client1);
+        this.clientRepository.save(this.client2);
     }
 
     @After
@@ -156,16 +163,21 @@ public class LicenseControllerIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].licenseType", Matchers.is(licenseType.toString())))
-                .andExpect(jsonPath("$[0].startDate", Matchers.is(startDate.getTime())))
-                .andExpect(jsonPath("$[0].endDate", Matchers.is(endDate.getTime())))
+                .andExpect(jsonPath("$[0].licenseType", Matchers.is(licenseType1.toString())))
+                .andExpect(jsonPath("$[0].startDate", Matchers.is(startDate1.getTime())))
+                .andExpect(jsonPath("$[0].endDate", Matchers.is(endDate1.getTime())))
                 .andExpect(jsonPath("$[0].licenseKey", Matchers.is(license1.getLicenseKey())))
-                .andExpect(jsonPath("$[0].keyStatus", Matchers.is(keyStatus.toString())))
+                .andExpect(jsonPath("$[0].keyStatus", Matchers.is(keyStatus1.toString())))
                 .andExpect(jsonPath("$[1].licenseType", Matchers.is(licenseType2.toString())))
                 .andExpect(jsonPath("$[1].startDate", Matchers.is(startDate2.getTime())))
                 .andExpect(jsonPath("$[1].endDate", Matchers.is(endDate2.getTime())))
                 .andExpect(jsonPath("$[1].licenseKey", Matchers.is(license2.getLicenseKey())))
                 .andExpect(jsonPath("$[1].keyStatus", Matchers.is(keyStatus2.toString())))
+                .andExpect(jsonPath("$[2].licenseType", Matchers.is(licenseType3.toString())))
+                .andExpect(jsonPath("$[2].startDate", Matchers.is(startDate3.getTime())))
+                .andExpect(jsonPath("$[2].endDate", Matchers.is(endDate3.getTime())))
+                .andExpect(jsonPath("$[2].licenseKey", Matchers.is(license3.getLicenseKey())))
+                .andExpect(jsonPath("$[2].keyStatus", Matchers.is(keyStatus3.toString())))
                 .andDo(print()).andReturn();
     }
 
@@ -179,11 +191,16 @@ public class LicenseControllerIntegrationTest {
         List<Client> all = (List<Client>) clientRepository.findAll();
         Client client = all.get(0);
 
-        //TODO:
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("licenseType","TRIAL");
+        jsonObject.put("startDate","2017-07-07");
+        jsonObject.put("endDate","2017-07-08");
+        jsonObject.put("keyStatus","KEY_INVALID");
+
         //introduce local variable
         this.mockMvc.perform(post("/license/")
                 .contentType(
-                        MediaType.APPLICATION_JSON).content("{\"licenseType\":\"TRIAL\",\"startDate\":\"2017-07-07\",\"endDate\":\"2017-07-08\",\"keyStatus\":\"KEY_INVALID\"}")
+                        MediaType.APPLICATION_JSON).content(jsonObject.toString())
                 .param("idClient", String.valueOf(client.getId()))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -196,46 +213,35 @@ public class LicenseControllerIntegrationTest {
     @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
     public void getLicenseByKey() throws Exception {
         List<License> licenses = (List<License>) licenseRepository.findAll();
-        License license = licenses.get(0);
+        License getLicense = licenses.get(0);
 
         this.mockMvc.perform(get("/license/getLicenseByKey")
-                .param("licenseKey", license.getLicenseKey())
+                .param("licenseKey", getLicense.getLicenseKey())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType.toString())))
-                .andExpect(jsonPath("$.startDate", Matchers.is(startDate.getTime())))
-                .andExpect(jsonPath("$.endDate", Matchers.is(endDate.getTime())))
-                .andExpect(jsonPath("$.licenseKey", Matchers.is(license.getLicenseKey())))
-                .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus.toString())))
+                .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType1.toString())))
+                .andExpect(jsonPath("$.startDate", Matchers.is(startDate1.getTime())))
+                .andExpect(jsonPath("$.endDate", Matchers.is(endDate1.getTime())))
+                .andExpect(jsonPath("$.licenseKey", Matchers.is(getLicense.getLicenseKey())))
+                .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus1.toString())))
                 .andDo(print()).andReturn();
     }
-
-    @Test
-    @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
-    public void getAllLicenseByEmail() throws Exception {
-        this.mockMvc.perform(get("/license/getAllLicenseByEmail")
-                .param("email", email1)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print()).andReturn();
-    }
-
 
     @Test
     @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
     public void changeKeyStatusByLicenseKey() throws Exception {
         List<License> licenses = (List<License>) licenseRepository.findAll();
-        License license = licenses.get(0);
+        License getLicense = licenses.get(0);
 
         this.mockMvc.perform(get("/license/changeKeyStatusByLicenseKey")
-                .param("licenseKey", license.getLicenseKey())
+                .param("licenseKey", getLicense.getLicenseKey())
                 .param("keyStatus", keyStatus3.toString())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType.toString())))
-                .andExpect(jsonPath("$.startDate", Matchers.is(startDate.getTime())))
-                .andExpect(jsonPath("$.endDate", Matchers.is(endDate.getTime())))
-                .andExpect(jsonPath("$.licenseKey", Matchers.is(license.getLicenseKey())))
+                .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType1.toString())))
+                .andExpect(jsonPath("$.startDate", Matchers.is(startDate1.getTime())))
+                .andExpect(jsonPath("$.endDate", Matchers.is(endDate1.getTime())))
+                .andExpect(jsonPath("$.licenseKey", Matchers.is(getLicense.getLicenseKey())))
                 .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus3.toString())))
                 .andDo(print()).andReturn();
     }
@@ -244,18 +250,60 @@ public class LicenseControllerIntegrationTest {
     @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
     public void changeLicenseTypeByLicenseKey() throws Exception {
         List<License> licenses = (List<License>) licenseRepository.findAll();
-        License license = licenses.get(0);
+        License getLicense = licenses.get(0);
 
         this.mockMvc.perform(get("/license/changeLicenseTypeByLicenseKey")
-                .param("licenseKey", license.getLicenseKey())
+                .param("licenseKey", getLicense.getLicenseKey())
                 .param("licenseType", licenseType3.toString())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType3.toString())))
-                .andExpect(jsonPath("$.startDate", Matchers.is(startDate.getTime())))
-                .andExpect(jsonPath("$.endDate", Matchers.is(endDate.getTime())))
-                .andExpect(jsonPath("$.licenseKey", Matchers.is(license.getLicenseKey())))
-                .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus.toString())))
+                .andExpect(jsonPath("$.startDate", Matchers.is(startDate1.getTime())))
+                .andExpect(jsonPath("$.endDate", Matchers.is(endDate1.getTime())))
+                .andExpect(jsonPath("$.licenseKey", Matchers.is(getLicense.getLicenseKey())))
+                .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus1.toString())))
+                .andDo(print()).andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
+    public void changeStartDateByLicenseKey() throws Exception {
+        List<License> licenses = (List<License>) licenseRepository.findAll();
+        License getLicense = licenses.get(0);
+
+        Date newStartDate = new Date();
+
+        this.mockMvc.perform(get("/license/changeStartDateByLicenseKey")
+                .param("licenseKey", getLicense.getLicenseKey())
+                .param("startDate", String.valueOf(newStartDate.getTime()))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType1.toString())))
+                .andExpect(jsonPath("$.startDate", Matchers.is(newStartDate.getTime())))
+                .andExpect(jsonPath("$.endDate", Matchers.is(endDate1.getTime())))
+                .andExpect(jsonPath("$.licenseKey", Matchers.is(license1.getLicenseKey())))
+                .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus1.toString())))
+                .andDo(print()).andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
+    public void changeEndDateByLicenseKey() throws Exception {
+        List<License> licenses = (List<License>) licenseRepository.findAll();
+        License getLicense = licenses.get(0);
+
+        Date newEndDate = new Date();
+
+        this.mockMvc.perform(get("/license/changeEndDateByLicenseKey")
+                .param("licenseKey", getLicense.getLicenseKey())
+                .param("endDate", String.valueOf(newEndDate.getTime()))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType1.toString())))
+                .andExpect(jsonPath("$.startDate", Matchers.is(startDate1.getTime())))
+                .andExpect(jsonPath("$.endDate", Matchers.is(newEndDate.getTime())))
+                .andExpect(jsonPath("$.licenseKey", Matchers.is(license1.getLicenseKey())))
+                .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus1.toString())))
                 .andDo(print()).andReturn();
     }
 
@@ -264,13 +312,17 @@ public class LicenseControllerIntegrationTest {
     @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
     public void deleteLicenseByKey() throws Exception {
         List<License> licenses = (List<License>) licenseRepository.findAll();
-        License license = licenses.get(0);
+        License getLicense = licenses.get(0);
 
         this.mockMvc.perform(delete("/license/deleteLicenseByKey")
-                .param("key", license.getLicenseKey())
+                .param("key", getLicense.getLicenseKey())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.licenseKey", Matchers.is(license.getLicenseKey())))
+                .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType1.toString())))
+                .andExpect(jsonPath("$.startDate", Matchers.is(startDate1.getTime())))
+                .andExpect(jsonPath("$.endDate", Matchers.is(endDate1.getTime())))
+                .andExpect(jsonPath("$.licenseKey", Matchers.is(getLicense.getLicenseKey())))
+                .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus1.toString())))
                 .andDo(print()).andReturn();
     }
 
