@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
  * Created by iosifvarga on 30.06.2017.
  */
 public class LicenseTest {
-    Date startDate = new Date();
     Date endDate = new Date();
     LicenseType licenseTypeLIFETIME = LicenseType.LIFETIME;
     KeyStatus keyStatus = KeyStatus.KEY_GOOD;
@@ -22,7 +21,7 @@ public class LicenseTest {
 
     @Before
     public void setup() throws Exception {
-        license1 = new License(licenseTypeLIFETIME,startDate,endDate,keyStatus);
+        license1 = new License(licenseTypeLIFETIME,endDate,keyStatus);
     }
     @Test
     public void getId() throws Exception {
@@ -49,6 +48,7 @@ public class LicenseTest {
 
     @Test
     public void getStartDate() throws Exception {
+        Date startDate = new Date();
         assertEquals(startDate,license1.getStartDate());
     }
 
@@ -61,7 +61,7 @@ public class LicenseTest {
 
     @Test
     public void getEndDate() throws Exception {
-        assertEquals(startDate,license1.getEndDate());
+        assertEquals(endDate,license1.getEndDate());
     }
 
     @Test

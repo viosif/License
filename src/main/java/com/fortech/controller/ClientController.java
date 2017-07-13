@@ -53,5 +53,28 @@ public class ClientController {
         return clientRepository.findFirstByEmail(email).getLicense();
     }
 
+    @RequestMapping(path = "/addLicenseToClient", method = RequestMethod.POST)
+    public Client addLicenseToClient(@RequestBody License license, @RequestParam("clientId") String clientId) {
+        licenseRepository.save(license);
+        Client client = clientRepository.findOne(Long.valueOf(clientId));
+        List<License> licenses = client.getLicense();
+        licenses.add(license);
+        client.setLicense(licenses);
+        clientRepository.save(client);
+        return client;
+    }
+
+    @RequestMapping(path = "/deleteLicenseFromClient", method = RequestMethod.DELETE)
+    public Client deleteLicenseFromClient(@RequestParam("licenseKey") String licenseKey, @RequestParam("clientId") String clientId) {
+        //Client client = clientRepository.findOne(Long.valueOf(clientId));
+        //List<License> licenses = client.getLicense();
+        //licenses.remove(license);
+        //client.setLicense(licenses);
+        //clientRepository.save(client);
+        //licenseRepository.deleteByLicenseKey(license.getLicenseKey());
+        return null;//client;
+    }
+
+
 
 }

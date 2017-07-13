@@ -4,6 +4,7 @@ package com.fortech.controller;
  * Created by iosifvarga on 28.06.2017.
  */
 
+import com.fortech.model.Client;
 import com.fortech.model.KeyStatus;
 import com.fortech.model.License;
 import com.fortech.model.LicenseType;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @CrossOrigin
 @RestController    // This means that this class is a Controller
@@ -31,11 +33,17 @@ public class LicenseController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public License createLicense(@RequestBody License license, @RequestParam Long idClient) {
-        //Client client = clientRepository.findOne(idClient);
+    public License createLicense(@RequestBody License license, @RequestParam String email) {
+        license.setStartDate(new Date());
+        license.setKeyStatus(KeyStatus.KEY_GOOD);
         license.setLicenseKey(Utils.generateLicenseKey());
-        //license.setClient(client);
         licenseRepository.save(license);
+
+        Client client = clientRepository.findFirstByEmail(email);
+        List<License> licenses = client.getLicense();
+        licenses.add(license);
+        client.setLicense(licenses);
+        clientRepository.save(client);
         return license;
     }
 

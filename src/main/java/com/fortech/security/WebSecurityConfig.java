@@ -83,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .antMatchers("/swagger-ui.html").permitAll()
                 .and().logout()
-                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).ignoringAntMatchers("/client/", "/client/deleteByEmail", "/client/findByEmail", "/license/", "/license/deleteLicenseByKey");
+                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).ignoringAntMatchers("/client/", "/client/deleteByEmail","/client/addLicenseToClient","/client/deleteLicenseFromClient", "/client/findByEmail", "/license/", "/license/deleteLicenseByKey");
         //.and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
     }
 

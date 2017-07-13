@@ -73,17 +73,14 @@ public class LicenseControllerIntegrationTest {
 
     private License license1;
     private LicenseType licenseType1 = LicenseType.LIFETIME;
-    private Date startDate1 = new Date();
     private Date endDate1 = new Date();
     private KeyStatus keyStatus1 = KeyStatus.KEY_GOOD;
     private License license2;
     private LicenseType licenseType2 = LicenseType.TRIAL;
-    private Date startDate2 = new Date();
     private Date endDate2 = new Date();
     private KeyStatus keyStatus2 = KeyStatus.KEY_BLACKLISTED;
     private License license3;
     private LicenseType licenseType3 = LicenseType.SINGLE_VERSION;
-    private Date startDate3 = new Date();
     private Date endDate3 = new Date();
     private KeyStatus keyStatus3 = KeyStatus.KEY_EXPIRED;
 
@@ -115,7 +112,6 @@ public class LicenseControllerIntegrationTest {
 
         this.license1 = new License();
         this.license1.setLicenseType(licenseType1);
-        this.license1.setStartDate(startDate1);
         this.license1.setEndDate(endDate1);
         this.license1.setLicenseKey(Utils.generateLicenseKey());
         this.license1.setKeyStatus(keyStatus1);
@@ -123,7 +119,6 @@ public class LicenseControllerIntegrationTest {
 
         this.license2 = new License();
         this.license2.setLicenseType(licenseType2);
-        this.license2.setStartDate(startDate2);
         this.license2.setEndDate(endDate2);
         this.license2.setLicenseKey(Utils.generateLicenseKey());
         this.license2.setKeyStatus(keyStatus2);
@@ -131,7 +126,6 @@ public class LicenseControllerIntegrationTest {
 
         this.license3 = new License();
         this.license3.setLicenseType(licenseType3);
-        this.license3.setStartDate(startDate3);
         this.license3.setEndDate(endDate3);
         this.license3.setLicenseKey(Utils.generateLicenseKey());
         this.license3.setKeyStatus(keyStatus3);
@@ -164,17 +158,14 @@ public class LicenseControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[0].licenseType", Matchers.is(licenseType1.toString())))
-                .andExpect(jsonPath("$[0].startDate", Matchers.is(startDate1.getTime())))
                 .andExpect(jsonPath("$[0].endDate", Matchers.is(endDate1.getTime())))
                 .andExpect(jsonPath("$[0].licenseKey", Matchers.is(license1.getLicenseKey())))
                 .andExpect(jsonPath("$[0].keyStatus", Matchers.is(keyStatus1.toString())))
                 .andExpect(jsonPath("$[1].licenseType", Matchers.is(licenseType2.toString())))
-                .andExpect(jsonPath("$[1].startDate", Matchers.is(startDate2.getTime())))
                 .andExpect(jsonPath("$[1].endDate", Matchers.is(endDate2.getTime())))
                 .andExpect(jsonPath("$[1].licenseKey", Matchers.is(license2.getLicenseKey())))
                 .andExpect(jsonPath("$[1].keyStatus", Matchers.is(keyStatus2.toString())))
                 .andExpect(jsonPath("$[2].licenseType", Matchers.is(licenseType3.toString())))
-                .andExpect(jsonPath("$[2].startDate", Matchers.is(startDate3.getTime())))
                 .andExpect(jsonPath("$[2].endDate", Matchers.is(endDate3.getTime())))
                 .andExpect(jsonPath("$[2].licenseKey", Matchers.is(license3.getLicenseKey())))
                 .andExpect(jsonPath("$[2].keyStatus", Matchers.is(keyStatus3.toString())))
@@ -193,19 +184,18 @@ public class LicenseControllerIntegrationTest {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("licenseType","TRIAL");
-        jsonObject.put("startDate","2017-07-07");
-        jsonObject.put("endDate","2017-07-08");
+        jsonObject.put("endDate",date1.getTime());
         jsonObject.put("keyStatus","KEY_INVALID");
 
-        //introduce local variable
         this.mockMvc.perform(post("/license/")
                 .contentType(
                         MediaType.APPLICATION_JSON).content(jsonObject.toString())
-                .param("idClient", String.valueOf(client.getId()))
+                .param("email", String.valueOf(client.getEmail()))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.licenseType", Matchers.is(LicenseType.TRIAL.toString())))
-                .andExpect(jsonPath("$.keyStatus", Matchers.is(KeyStatus.KEY_INVALID.toString())))
+                .andExpect(jsonPath("$.endDate", Matchers.is(date1.getTime())))
+                .andExpect(jsonPath("$.keyStatus", Matchers.is(KeyStatus.KEY_GOOD.toString())))
                 .andDo(print()).andReturn();
     }
 
@@ -220,7 +210,6 @@ public class LicenseControllerIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType1.toString())))
-                .andExpect(jsonPath("$.startDate", Matchers.is(startDate1.getTime())))
                 .andExpect(jsonPath("$.endDate", Matchers.is(endDate1.getTime())))
                 .andExpect(jsonPath("$.licenseKey", Matchers.is(getLicense.getLicenseKey())))
                 .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus1.toString())))
@@ -239,7 +228,6 @@ public class LicenseControllerIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType1.toString())))
-                .andExpect(jsonPath("$.startDate", Matchers.is(startDate1.getTime())))
                 .andExpect(jsonPath("$.endDate", Matchers.is(endDate1.getTime())))
                 .andExpect(jsonPath("$.licenseKey", Matchers.is(getLicense.getLicenseKey())))
                 .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus3.toString())))
@@ -258,7 +246,6 @@ public class LicenseControllerIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType3.toString())))
-                .andExpect(jsonPath("$.startDate", Matchers.is(startDate1.getTime())))
                 .andExpect(jsonPath("$.endDate", Matchers.is(endDate1.getTime())))
                 .andExpect(jsonPath("$.licenseKey", Matchers.is(getLicense.getLicenseKey())))
                 .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus1.toString())))
@@ -300,7 +287,6 @@ public class LicenseControllerIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType1.toString())))
-                .andExpect(jsonPath("$.startDate", Matchers.is(startDate1.getTime())))
                 .andExpect(jsonPath("$.endDate", Matchers.is(newEndDate.getTime())))
                 .andExpect(jsonPath("$.licenseKey", Matchers.is(license1.getLicenseKey())))
                 .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus1.toString())))
@@ -319,7 +305,6 @@ public class LicenseControllerIntegrationTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.licenseType", Matchers.is(licenseType1.toString())))
-                .andExpect(jsonPath("$.startDate", Matchers.is(startDate1.getTime())))
                 .andExpect(jsonPath("$.endDate", Matchers.is(endDate1.getTime())))
                 .andExpect(jsonPath("$.licenseKey", Matchers.is(getLicense.getLicenseKey())))
                 .andExpect(jsonPath("$.keyStatus", Matchers.is(keyStatus1.toString())))

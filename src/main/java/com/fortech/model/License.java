@@ -24,7 +24,7 @@ public class License {
 
     @NotNull
     @Column(name = "startDate")
-    private Date startDate;
+    private Date startDate = new Date();
 
     @NotNull
     @Column(name = "endDate")
@@ -42,9 +42,8 @@ public class License {
     public License() {
     }
 
-    public License(LicenseType licenseType, Date startDate, Date endDate, KeyStatus keyStatus) {
+    public License(LicenseType licenseType, Date endDate, KeyStatus keyStatus) {
         this.licenseType = licenseType;
-        this.startDate = startDate;
         this.endDate = endDate;
         this.keyStatus = keyStatus;
     }
