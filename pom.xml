@@ -4,9 +4,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.fortech</groupId>
-    <artifactId>fortech</artifactId>
+    <artifactId>com.fortech</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>model</module>
+        <module>rest-api</module>
+        <module>boot</module>
+    </modules>
 
     <name>api</name>
     <description>Demo project for Spring Boot</description>
@@ -18,12 +25,27 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fortech</groupId>
+                <artifactId>rest-api</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fortech</groupId>
+                <artifactId>model</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
 
         <dependency>
@@ -92,6 +114,7 @@
             <artifactId>spring-data-jpa</artifactId>
             <version>1.11.4.RELEASE</version>
         </dependency>
+
 
 
     </dependencies>
