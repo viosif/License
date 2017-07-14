@@ -315,6 +315,44 @@ public class ClientLicenseControllerIntegrationtest {
                 .andDo(print()).andReturn();
     }
 
+    @Test
+    @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
+    public void findByEmailPage() throws Exception {
+
+        licenseRepository.deleteAll();
+        clientRepository.deleteAll();
+
+        this.mockMvc.perform(get("/client/createClientsMock")
+                .accept(MediaType.TEXT_EVENT_STREAM_VALUE))
+                .andExpect(status().isOk())
+                .andDo(print()).andReturn();
+
+        this.mockMvc.perform(get("/client/findByEmailPage")
+                .param("page",String.valueOf(0))
+                .param("size",String.valueOf(20))
+                .param("email",String.valueOf("email1"))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content[0].name", Matchers.is("varga1")))
+                .andExpect(jsonPath("$.content[0].surname", Matchers.is("iosif1")))
+                .andExpect(jsonPath("$.content[0].age", Matchers.is(1)))
+                .andExpect(jsonPath("$.content[0].email", Matchers.is("email1@email.com")))
+                .andExpect(jsonPath("$.content[0].license[0].licenseType", Matchers.is("TRIAL")))
+                .andExpect(jsonPath("$.content[0].license[0].endDate", Matchers.is(1500015104410L)))
+                .andExpect(jsonPath("$.content[0].license[0].keyStatus", Matchers.is("KEY_GOOD")))
+
+                .andExpect(jsonPath("$.last", Matchers.is(Boolean.TRUE)))
+                .andExpect(jsonPath("$.totalElements", Matchers.is(11)))
+                .andExpect(jsonPath("$.totalPages", Matchers.is(1)))
+                .andExpect(jsonPath("$.sort", nullValue()))
+                .andExpect(jsonPath("$.numberOfElements", Matchers.is(11)))
+                .andExpect(jsonPath("$.first", Matchers.is(Boolean.TRUE)))
+                .andExpect(jsonPath("$.size", Matchers.is(20)))
+                .andExpect(jsonPath("$.number", Matchers.is(0)))
+
+                .andExpect(status().isOk())
+                .andDo(print()).andReturn();
+    }
+
 
     /*
     @Test

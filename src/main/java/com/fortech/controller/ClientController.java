@@ -110,8 +110,6 @@ public class ClientController {
     public Page<ClientDTO> findByEmailPage(Pageable pageable, @RequestParam("email") String email) {
         Page<Client> clientPage = clientRepository.findByEmailLike(pageable, email);
 
-        System.out.println("********************************************* "+ clientPage.getContent().toString());
-
         List<ClientDTO> clientDTOS = new ArrayList<>();
         clientPage.getContent().forEach(client -> {
             clientDTOS.add(client.toDto());
