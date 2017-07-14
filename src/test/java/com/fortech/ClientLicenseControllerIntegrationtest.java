@@ -262,6 +262,7 @@ public class ClientLicenseControllerIntegrationtest {
                 .andDo(print()).andReturn();
     }
 
+    /*
     @Test
     @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
     public void addLicenseToClient() throws Exception {
@@ -326,5 +327,5 @@ public class ClientLicenseControllerIntegrationtest {
                 .andExpect(jsonPath("$.license[0].licenseKey", Matchers.is(license2.getLicenseKey())))
                 .andExpect(jsonPath("$.license[0].keyStatus", Matchers.is(keyStatus2.toString())))
                .andDo(print()).andReturn();
-    }
+    }*/
 }

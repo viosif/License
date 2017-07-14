@@ -4,6 +4,7 @@ package com.fortech.controller;
  * Created by iosifvarga on 28.06.2017.
  */
 
+import com.fortech.DTO.LicenseDTO;
 import com.fortech.model.Client;
 import com.fortech.model.KeyStatus;
 import com.fortech.model.License;
@@ -14,6 +15,7 @@ import com.fortech.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,24 +30,31 @@ public class LicenseController {
     private ClientRepository clientRepository;
 
     @RequestMapping(path = "/list", method = RequestMethod.GET)
-    public Iterable<License> getAllLicense() {
-        return licenseRepository.findAll();
+    public Iterable<LicenseDTO> getAllLicense() {
+        List<LicenseDTO> licenseDTOS = new ArrayList<>();
+        Iterable<License> licenses = licenseRepository.findAll();
+        licenses.forEach(license -> {
+            licenseDTOS.add(license.toDto());
+        });
+        return licenseDTOS;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public License createLicense(@RequestBody License license, @RequestParam String email) {
-        license.setStartDate(new Date());
-        license.setKeyStatus(KeyStatus.KEY_GOOD);
-        license.setLicenseKey(Utils.generateLicenseKey());
+    public LicenseDTO createLicense(@RequestBody LicenseDTO licenseDTO, @RequestParam String email) {
+        licenseDTO.setStartDate(new Date());
+        licenseDTO.setKeyStatus(KeyStatus.KEY_GOOD);
+        licenseDTO.setLicenseKey(Utils.generateLicenseKey());
+        License license = licenseDTO.toEntity();
         licenseRepository.save(license);
 
         Client client = clientRepository.findFirstByEmail(email);
-        List<License> licenses = client.getLicense();
-        licenses.add(license);
-        client.setLicense(licenses);
+        List<License> licensesDtos = client.getLicense();
+        licensesDtos.add(license);
+        client.setLicense(licensesDtos);
+
         clientRepository.save(client);
 
-        return license;
+        return licenseDTO;
     }
 
     @RequestMapping(path = "/getLicenseByKey", method = RequestMethod.GET)
@@ -54,42 +63,42 @@ public class LicenseController {
     }
 
     @RequestMapping(path = "/changeKeyStatusByLicenseKey", method = RequestMethod.GET)
-    public License changeKeyStatusByLicenseKey(@RequestParam("licenseKey") String licenseKey, @RequestParam("keyStatus") KeyStatus keyStatus) {
+    public LicenseDTO changeKeyStatusByLicenseKey(@RequestParam("licenseKey") String licenseKey, @RequestParam("keyStatus") KeyStatus keyStatus) {
         License license = licenseRepository.findFirstByLicenseKey(licenseKey);
         license.setKeyStatus(keyStatus);
         licenseRepository.save(license);
-        return license;
+        return license.toDto();
     }
 
     @RequestMapping(path = "/changeLicenseTypeByLicenseKey", method = RequestMethod.GET)
-    public License changeLicenseTypeByLicenseKey(@RequestParam("licenseKey") String licenseKey, @RequestParam("licenseType")LicenseType licenseType) {
+    public LicenseDTO changeLicenseTypeByLicenseKey(@RequestParam("licenseKey") String licenseKey, @RequestParam("licenseType")LicenseType licenseType) {
         License license = licenseRepository.findFirstByLicenseKey(licenseKey);
         license.setLicenseType(licenseType);
         licenseRepository.save(license);
-        return license;
+        return license.toDto();
     }
 
     @RequestMapping(path = "/changeStartDateByLicenseKey", method = RequestMethod.GET)
-    public License changeStartDateByLicenseKey(@RequestParam("licenseKey") String licenseKey, @RequestParam("startDate")String startDate) {
+    public LicenseDTO changeStartDateByLicenseKey(@RequestParam("licenseKey") String licenseKey, @RequestParam("startDate")String startDate) {
         License license = licenseRepository.findFirstByLicenseKey(licenseKey);
         license.setStartDate(new Date(Long.valueOf(startDate)));
         licenseRepository.save(license);
-        return license;
+        return license.toDto();
     }
 
     @RequestMapping(path = "/changeEndDateByLicenseKey", method = RequestMethod.GET)
-    public License changeEndDateByLicenseKey(@RequestParam("licenseKey") String licenseKey, @RequestParam("endDate")String endDate) {
+    public LicenseDTO changeEndDateByLicenseKey(@RequestParam("licenseKey") String licenseKey, @RequestParam("endDate")String endDate) {
         License license = licenseRepository.findFirstByLicenseKey(licenseKey);
         license.setEndDate(new Date(Long.valueOf(endDate)));
         licenseRepository.save(license);
-        return license;
+        return license.toDto();
     }
 
     @RequestMapping(path = "/deleteLicenseByKey", method = RequestMethod.DELETE)
-    public License deleteLicenseByKey(@RequestParam("key") String licenseKey) {
+    public LicenseDTO deleteLicenseByKey(@RequestParam("key") String licenseKey) {
         License license = licenseRepository.findFirstByLicenseKey(licenseKey);
         licenseRepository.delete(license.getId());
-        return license;
+        return license.toDto();
     }
 
 }

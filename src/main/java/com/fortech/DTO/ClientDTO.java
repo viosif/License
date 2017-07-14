@@ -1,10 +1,8 @@
-package com.fortech.model;
+package com.fortech.DTO;
 
-import com.fortech.DTO.ClientDTO;
-import com.fortech.DTO.LicenseDTO;
+import com.fortech.model.Client;
+import com.fortech.model.License;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,43 +10,19 @@ import java.util.List;
 /**
  * Created by iosifvarga on 07.07.2017.
  */
-@Entity // This tells Hibernate to make a table out of this class
-@Table(name = "client")
-public class Client {
+public class ClientDTO extends BaseDTO<Client> {
 
-    @Id
-    @NotNull
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private long id;
-
-    @NotNull
-    @Column(name = "name")
     private String name;
-
-    @NotNull
-    @Column(name = "surname")
     private String surname;
-
-    @NotNull
-    @Column(name = "age")
     private int age;
-
-    @NotNull
-    @Column(name = "email", unique = true)
     private String email;
-
-    @Column(name = "created")
     private Date created = new Date();
+    private List<LicenseDTO> license = new ArrayList<>();
 
-    @OneToMany
-    @JoinColumn(name = "license_id")
-    private List<License> license = new ArrayList<>();
-
-    public Client() {
+    public ClientDTO() {
     }
 
-    public Client(String name, String surname, int age, String email, List<License> license) {
+    public ClientDTO(String name, String surname, int age, String email, List<LicenseDTO> license) {
         this.name = name;
         this.surname = surname;
         this.age = age;
@@ -59,21 +33,12 @@ public class Client {
     @Override
     public String toString() {
         return "{" +
-                "id=" + id +
                 ", name=\"" + name + '\"' +
                 ", surname=\"" + surname + '\"' +
                 ", age=" + age +
                 ", email=\"" + email + '\"' +
                 ", created=\"" + created.getTime() + '\"' +
                 '}';
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -116,25 +81,26 @@ public class Client {
         this.created = created;
     }
 
-    public List<License> getLicense() {
+    public List<LicenseDTO> getLicense() {
         return license;
     }
 
-    public void setLicense(List<License> license) {
+    public void setLicense(List<LicenseDTO> license) {
         this.license = license;
     }
 
-    public ClientDTO toDto() {
-        ClientDTO clientDTO = new ClientDTO();
-        clientDTO.setName(this.name);
-        clientDTO.setSurname(this.surname);
-        clientDTO.setAge(this.age);
-        clientDTO.setEmail(this.email);
-        List<LicenseDTO> licenseDTOS = new ArrayList<>();
+    public Client toEntity() {
+        Client client = new Client();
+        client.setName(this.name);
+        client.setSurname(this.surname);
+        client.setAge(this.age);
+        client.setEmail(this.email);
+        List<License> licenseList = new ArrayList<>();
         this.license.forEach(license1 -> {
-            licenseDTOS.add(license1.toDto());
+            licenseList.add(license1.toEntity());
         });
-        clientDTO.setLicense(licenseDTOS);
-        return clientDTO;
+        client.setLicense(licenseList);
+        return client;
     }
+
 }

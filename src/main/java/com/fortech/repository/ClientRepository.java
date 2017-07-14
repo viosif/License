@@ -1,13 +1,15 @@
 package com.fortech.repository;
 
 import com.fortech.model.Client;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by iosifvarga on 07.07.2017.
  */
-public interface ClientRepository extends CrudRepository<Client, Long> {
+@Repository
+public interface ClientRepository extends PagingAndSortingRepository<Client, Long> {
 
     Iterable<Client> findByEmail(String email);
 
