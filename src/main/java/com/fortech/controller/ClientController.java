@@ -47,21 +47,15 @@ public class ClientController {
 
     @Transactional(readOnly = true)
     @RequestMapping(path = "/listPage", method = RequestMethod.GET)
-    public Page<ClientDTO> getAllClientPage(Pageable pageable) {
+    public Page<ClientDTO> listPage(Pageable pageable) {
         Page<Client> clientPage = clientRepository.findAll(pageable);
 
-        List<ClientDTO> clientDTOS=new ArrayList<>();
+        List<ClientDTO> clientDTOS = new ArrayList<>();
         clientPage.getContent().forEach(client -> {
             clientDTOS.add(client.toDto());
         });
 
-        return new PageImpl<ClientDTO>(clientDTOS,pageable,clientPage.getTotalElements());
-    }
-
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ClientDTO createClient(@RequestBody ClientDTO clientDTO) {
-        clientRepository.save(clientDTO.toEntity());
-        return clientDTO;
+        return new PageImpl<ClientDTO>(clientDTOS, pageable, clientPage.getTotalElements());
     }
 
     @RequestMapping(value = "/createClientsMock", method = RequestMethod.GET)
@@ -70,14 +64,14 @@ public class ClientController {
         License license;
         for (int i = 0; i < 100; i++) {
             client = new Client();
-            client.setName("varga"+i);
-            client.setSurname("iosif"+i);
+            client.setName("varga" + i);
+            client.setSurname("iosif" + i);
             client.setAge(i);
-            client.setEmail("email"+i+"@email.com");
+            client.setEmail("email" + i + "@email.com");
 
             license = new License();
             license.setLicenseType(LicenseType.TRIAL);
-            license.setEndDate(new Date());
+            license.setEndDate(new Date(1500015104410L));
             license.setLicenseKey(Utils.generateLicenseKey());
             license.setKeyStatus(KeyStatus.KEY_GOOD);
             licenseRepository.save(license);
@@ -86,6 +80,12 @@ public class ClientController {
         }
 
         return "ok";
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    public ClientDTO createClient(@RequestBody ClientDTO clientDTO) {
+        clientRepository.save(clientDTO.toEntity());
+        return clientDTO;
     }
 
     @RequestMapping(path = "/deleteByEmail", method = RequestMethod.DELETE)
@@ -104,6 +104,20 @@ public class ClientController {
             clientDTO.add(client.toDto());
         });
         return clientDTO;
+    }
+
+    @RequestMapping(path = "/findByEmailPage", method = RequestMethod.GET)
+    public Page<ClientDTO> findByEmailPage(Pageable pageable, @RequestParam("email") String email) {
+        Page<Client> clientPage = clientRepository.findByEmailLike(pageable, email);
+
+        System.out.println("********************************************* "+ clientPage.getContent().toString());
+
+        List<ClientDTO> clientDTOS = new ArrayList<>();
+        clientPage.getContent().forEach(client -> {
+            clientDTOS.add(client.toDto());
+        });
+
+        return new PageImpl<ClientDTO>(clientDTOS, pageable, clientPage.getTotalElements());
     }
 
     @RequestMapping(path = "/getAllLicenseByEmail", method = RequestMethod.GET)

@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -96,7 +97,7 @@ public class ClientLicenseControllerIntegrationtest {
     }
 
     @Before
-    public void initRepository(){
+    public void initRepository() {
         this.licenseRepository.deleteAll();
         this.clientRepository.deleteAll();
 
@@ -261,6 +262,59 @@ public class ClientLicenseControllerIntegrationtest {
                 .andExpect(status().isOk())
                 .andDo(print()).andReturn();
     }
+
+
+    /*@Test
+    @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
+    public void createClientsMock() throws Exception {
+
+        licenseRepository.deleteAll();
+        clientRepository.deleteAll();
+
+        this.mockMvc.perform(get("/client/createClientsMock")
+                .accept(MediaType.TEXT_EVENT_STREAM_VALUE))
+                .andExpect(status().isOk())
+                .andDo(print()).andReturn();
+    }*/
+
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"USER", "ADMIN"})
+    public void listPage() throws Exception {
+
+        licenseRepository.deleteAll();
+        clientRepository.deleteAll();
+
+        this.mockMvc.perform(get("/client/createClientsMock")
+                .accept(MediaType.TEXT_EVENT_STREAM_VALUE))
+                .andExpect(status().isOk())
+                .andDo(print()).andReturn();
+
+        this.mockMvc.perform(get("/client/listPage")
+                .param("page",String.valueOf(2))
+                .param("size",String.valueOf(10))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content[0].name", Matchers.is("varga20")))
+                .andExpect(jsonPath("$.content[0].surname", Matchers.is("iosif20")))
+                .andExpect(jsonPath("$.content[0].age", Matchers.is(20)))
+                .andExpect(jsonPath("$.content[0].email", Matchers.is("email20@email.com")))
+                .andExpect(jsonPath("$.content[0].license[0].licenseType", Matchers.is("TRIAL")))
+                .andExpect(jsonPath("$.content[0].license[0].endDate", Matchers.is(1500015104410L)))
+                .andExpect(jsonPath("$.content[0].license[0].keyStatus", Matchers.is("KEY_GOOD")))
+
+                .andExpect(jsonPath("$.last", Matchers.is(Boolean.FALSE)))
+                .andExpect(jsonPath("$.totalElements", Matchers.is(100)))
+                .andExpect(jsonPath("$.totalPages", Matchers.is(10)))
+                .andExpect(jsonPath("$.sort", nullValue()))
+                .andExpect(jsonPath("$.numberOfElements", Matchers.is(10)))
+                .andExpect(jsonPath("$.first", Matchers.is(Boolean.FALSE)))
+                .andExpect(jsonPath("$.size", Matchers.is(10)))
+                .andExpect(jsonPath("$.number", Matchers.is(2)))
+
+                .andExpect(status().isOk())
+                .andDo(print()).andReturn();
+    }
+
 
     /*
     @Test
