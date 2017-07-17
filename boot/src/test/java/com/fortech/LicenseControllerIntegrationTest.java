@@ -1,6 +1,6 @@
 package com.fortech;
 
-import com.fortech.keyGenerator.generateKey;
+import com.fortech.services.GenerateKey;
 import com.fortech.model.Client;
 import com.fortech.model.KeyStatus;
 import com.fortech.model.License;
@@ -121,21 +121,21 @@ public class LicenseControllerIntegrationTest {
         this.license1 = new License();
         this.license1.setLicenseType(licenseType1);
         this.license1.setEndDate(endDate1);
-        this.license1.setLicenseKey(generateKey.generateLicenseKey());
+        this.license1.setLicenseKey(GenerateKey.generateLicenseKey());
         this.license1.setKeyStatus(keyStatus1);
         this.licenseRepository.save(this.license1);
 
         this.license2 = new License();
         this.license2.setLicenseType(licenseType2);
         this.license2.setEndDate(endDate2);
-        this.license2.setLicenseKey(generateKey.generateLicenseKey());
+        this.license2.setLicenseKey(GenerateKey.generateLicenseKey());
         this.license2.setKeyStatus(keyStatus2);
         this.licenseRepository.save(this.license2);
 
         this.license3 = new License();
         this.license3.setLicenseType(licenseType3);
         this.license3.setEndDate(endDate3);
-        this.license3.setLicenseKey(generateKey.generateLicenseKey());
+        this.license3.setLicenseKey(GenerateKey.generateLicenseKey());
         this.license3.setKeyStatus(keyStatus3);
         this.licenseRepository.save(this.license3);
 

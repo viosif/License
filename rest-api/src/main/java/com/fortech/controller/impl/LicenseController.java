@@ -5,7 +5,7 @@ package com.fortech.controller.impl;
  */
 
 import com.fortech.controller.LicenseInterface;
-import com.fortech.keyGenerator.generateKey;
+import com.fortech.services.GenerateKey;
 import com.fortech.model.KeyStatus;
 import com.fortech.model.License;
 import com.fortech.model.LicenseType;
@@ -54,7 +54,7 @@ public class LicenseController implements LicenseInterface {
     public LicenseDTO createLicense(@RequestBody LicenseDTO licenseDTO, @RequestParam String email) {
         licenseDTO.setStartDate(new Date());
         licenseDTO.setKeyStatus(KeyStatus.KEY_GOOD);
-        licenseDTO.setLicenseKey(generateKey.generateLicenseKey());
+        licenseDTO.setLicenseKey(GenerateKey.generateLicenseKey());
         License license = licenseDTO.toEntity();
         licenseRepository.save(license);
 

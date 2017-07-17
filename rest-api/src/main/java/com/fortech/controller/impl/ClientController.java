@@ -1,7 +1,7 @@
 package com.fortech.controller.impl;
 
 import com.fortech.controller.ClientInterface;
-import com.fortech.keyGenerator.generateKey;
+import com.fortech.services.GenerateKey;
 import com.fortech.model.KeyStatus;
 import com.fortech.model.License;
 import com.fortech.model.LicenseType;
@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,7 +82,7 @@ public class ClientController implements ClientInterface {
             license = new License();
             license.setLicenseType(LicenseType.TRIAL);
             license.setEndDate(new Date(1500015104410L));
-            license.setLicenseKey(generateKey.generateLicenseKey());
+            license.setLicenseKey(GenerateKey.generateLicenseKey());
             license.setKeyStatus(KeyStatus.KEY_GOOD);
             licenseRepository.save(license);
             client.setLicense(Arrays.asList(license));

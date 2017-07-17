@@ -1,11 +1,17 @@
-package com.fortech.keyGenerator;
+package com.fortech.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.invoke.MethodHandles;
 import java.util.Random;
 
 /**
  * Created by iosifvarga on 29.06.2017.
  */
-public class generateKey {
+public class GenerateKey {
+
+    private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static String generateLicenseKey() {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -20,9 +26,12 @@ public class generateKey {
                 salt.append(SALTCHARS.charAt(index));
         }
         String saltStr = salt.toString();
+
+        log.info("Generate Key = " + saltStr);
         return saltStr;
     }
 
+    //for learning
     /*
     public static Client clientDTOToEntity(ClientDTO clientDTO) {
         Client client = new Client();
