@@ -35,23 +35,23 @@ public class ClientController implements ClientInterface {
     @Autowired
     LicenseRepository licenseRepository;
 
+
     @RequestMapping(path = "/list", method = RequestMethod.GET)
     public Iterable<ClientDTO> getAllClient() {
-        List<ClientDTO> clientDTO = new ArrayList<>();
+        List<ClientDTO> clientDTOS = new ArrayList<>();
         Iterable<Client> clients = clientRepository.findAll();
         clients.forEach(client -> {
-            clientDTO.add(client.toDto());
+            clientDTOS.add(client.toDto());
         });
-        return clientDTO;
+        return clientDTOS;
     }
 
 
     @Transactional(readOnly = true)
     @RequestMapping(path = "/listPage", method = RequestMethod.GET)
     public Page<ClientDTO> listPage(Pageable pageable) {
-        Page<Client> clientPage = clientRepository.findAll(pageable);
-
         List<ClientDTO> clientDTOS = new ArrayList<>();
+        Page<Client> clientPage = clientRepository.findAll(pageable);
         clientPage.getContent().forEach(client -> {
             clientDTOS.add(client.toDto());
         });
@@ -99,19 +99,18 @@ public class ClientController implements ClientInterface {
 
     @RequestMapping(path = "/findByEmail", method = RequestMethod.GET)
     public Iterable<ClientDTO> findByEmail(@RequestParam("email") String email) {
-        List<ClientDTO> clientDTO = new ArrayList<>();
+        List<ClientDTO> clientDTOS = new ArrayList<>();
         Iterable<Client> clients = clientRepository.findByEmail(email);
         clients.forEach(client -> {
-            clientDTO.add(client.toDto());
+            clientDTOS.add(client.toDto());
         });
-        return clientDTO;
+        return clientDTOS;
     }
 
     @RequestMapping(path = "/findByEmailPage", method = RequestMethod.GET)
     public Page<ClientDTO> findByEmailPage(Pageable pageable, @RequestParam("email") String email) {
-        Page<Client> clientPage = clientRepository.findByEmailLike(pageable, email);
-
         List<ClientDTO> clientDTOS = new ArrayList<>();
+        Page<Client> clientPage = clientRepository.findByEmailLike(pageable, email);
         clientPage.getContent().forEach(client -> {
             clientDTOS.add(client.toDto());
         });
