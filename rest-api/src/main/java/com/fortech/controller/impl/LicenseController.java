@@ -13,9 +13,12 @@ import com.fortech.repository.ClientRepository;
 import com.fortech.repository.LicenseRepository;
 import com.fortech.dto.LicenseDTO;
 import com.fortech.model.Client;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +30,9 @@ import java.util.List;
 @RestController    // This means that this class is a Controller
 @RequestMapping(value = "/license") // This means URL's start with /demo (after Application path)
 public class LicenseController implements LicenseInterface {
+
+    private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     @Autowired
     private LicenseRepository licenseRepository;
 
@@ -39,6 +45,7 @@ public class LicenseController implements LicenseInterface {
         Iterable<License> licenses = licenseRepository.findAll();
         licenses.forEach(license -> {
             licenseDTOS.add(license.toDto());
+            log.info("getAllLicense " + license.toString());
         });
         return licenseDTOS;
     }
@@ -58,12 +65,16 @@ public class LicenseController implements LicenseInterface {
 
         clientRepository.save(client);
 
+        log.info("createLicense " + licenseDTO.toString());
+
         return licenseDTO;
     }
 
     @RequestMapping(path = "/getLicenseByKey", method = RequestMethod.GET)
     public License getLicenseByKey(@RequestParam("licenseKey") String licenseParam) {
-        return licenseRepository.findFirstByLicenseKey(licenseParam);
+        License license = licenseRepository.findFirstByLicenseKey(licenseParam);
+        log.info("getLicenseByKey " + license.toString());
+        return license;
     }
 
     @RequestMapping(path = "/changeKeyStatusByLicenseKey", method = RequestMethod.GET)
@@ -71,6 +82,7 @@ public class LicenseController implements LicenseInterface {
         License license = licenseRepository.findFirstByLicenseKey(licenseKey);
         license.setKeyStatus(keyStatus);
         licenseRepository.save(license);
+        log.info("changeKeyStatusByLicenseKey " + license.toDto());
         return license.toDto();
     }
 
@@ -79,6 +91,7 @@ public class LicenseController implements LicenseInterface {
         License license = licenseRepository.findFirstByLicenseKey(licenseKey);
         license.setLicenseType(licenseType);
         licenseRepository.save(license);
+        log.info("changeLicenseTypeByLicenseKey " + license.toDto());
         return license.toDto();
     }
 
@@ -87,6 +100,7 @@ public class LicenseController implements LicenseInterface {
         License license = licenseRepository.findFirstByLicenseKey(licenseKey);
         license.setStartDate(new Date(Long.valueOf(startDate)));
         licenseRepository.save(license);
+        log.info("changeStartDateByLicenseKey " + license.toDto());
         return license.toDto();
     }
 
@@ -95,6 +109,7 @@ public class LicenseController implements LicenseInterface {
         License license = licenseRepository.findFirstByLicenseKey(licenseKey);
         license.setEndDate(new Date(Long.valueOf(endDate)));
         licenseRepository.save(license);
+        log.info("changeEndDateByLicenseKey " + license.toDto());
         return license.toDto();
     }
 
@@ -102,6 +117,7 @@ public class LicenseController implements LicenseInterface {
     public LicenseDTO deleteLicenseByKey(@RequestParam("key") String licenseKey) {
         License license = licenseRepository.findFirstByLicenseKey(licenseKey);
         licenseRepository.delete(license.getId());
+        log.info("deleteLicenseByKey " + license.toDto());
         return license.toDto();
     }
 

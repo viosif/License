@@ -10,6 +10,8 @@ import com.fortech.repository.LicenseRepository;
 import com.fortech.dto.ClientDTO;
 import com.fortech.dto.LicenseDTO;
 import com.fortech.model.Client;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -29,6 +33,9 @@ import java.util.List;
 @RestController    // This means that this class is a Controller
 @RequestMapping(value = "/client") // This means URL's start with /demo (after Application path)
 public class ClientController implements ClientInterface {
+
+    private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
     @Autowired
     private ClientRepository clientRepository;
 
@@ -42,7 +49,9 @@ public class ClientController implements ClientInterface {
         Iterable<Client> clients = clientRepository.findAll();
         clients.forEach(client -> {
             clientDTOS.add(client.toDto());
+            log.info("list client " + client.toString());
         });
+
         return clientDTOS;
     }
 
@@ -54,6 +63,7 @@ public class ClientController implements ClientInterface {
         Page<Client> clientPage = clientRepository.findAll(pageable);
         clientPage.getContent().forEach(client -> {
             clientDTOS.add(client.toDto());
+            log.info("listPage client " + client.toString());
         });
 
         return new PageImpl<ClientDTO>(clientDTOS, pageable, clientPage.getTotalElements());
@@ -78,6 +88,8 @@ public class ClientController implements ClientInterface {
             licenseRepository.save(license);
             client.setLicense(Arrays.asList(license));
             clientRepository.save(client);
+
+            log.info("createClientsMock client " + client.toString());
         }
 
         return "ok";
@@ -86,6 +98,7 @@ public class ClientController implements ClientInterface {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ClientDTO createClient(@RequestBody ClientDTO clientDTO) {
         clientRepository.save(clientDTO.toEntity());
+        log.info("createClient " + clientDTO.toString());
         return clientDTO;
     }
 
@@ -94,6 +107,7 @@ public class ClientController implements ClientInterface {
         Client client = clientRepository.findFirstByEmail(email);
         licenseRepository.delete(client.getLicense());
         clientRepository.deleteByEmail(email);
+        log.info("deleteByEmail client " + client.toString());
         return client.toDto();
     }
 
@@ -103,6 +117,7 @@ public class ClientController implements ClientInterface {
         Iterable<Client> clients = clientRepository.findByEmail(email);
         clients.forEach(client -> {
             clientDTOS.add(client.toDto());
+            log.info("findByEmail client " + client.toString());
         });
         return clientDTOS;
     }
@@ -113,6 +128,7 @@ public class ClientController implements ClientInterface {
         Page<Client> clientPage = clientRepository.findByEmailLike(pageable, email);
         clientPage.getContent().forEach(client -> {
             clientDTOS.add(client.toDto());
+            log.info("findByEmailPage client " + client.toString());
         });
 
         return new PageImpl<ClientDTO>(clientDTOS, pageable, clientPage.getTotalElements());
@@ -124,6 +140,7 @@ public class ClientController implements ClientInterface {
         List<License> licenses = clientRepository.findFirstByEmail(email).getLicense();
         licenses.forEach(license -> {
             licenseDTOS.add(license.toDto());
+            log.info("getAllLicenseByEmail licenses " + licenses.toString());
         });
         return licenseDTOS;
     }
