@@ -75,8 +75,7 @@ public class ClientController implements ClientInterface {
         for (int i = 0; i < 100; i++) {
             client = new Client();
             client.setName("varga" + i);
-            client.setSurname("iosif" + i);
-            client.setAge(i);
+            client.setExtraInformations("iosif" + i);
             client.setEmail("email" + i + "@email.com");
 
             license = new License();

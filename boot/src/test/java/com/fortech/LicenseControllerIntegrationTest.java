@@ -104,16 +104,14 @@ public class LicenseControllerIntegrationTest {
 
         this.client1 = new Client();
         this.client1.setName(name1);
-        this.client1.setSurname(surname1);
-        this.client1.setAge(age1);
+        this.client1.setExtraInformations(surname1);
         this.client1.setEmail(email1);
         this.client1.setCreated(created1);
         this.clientRepository.save(this.client1);
 
         this.client2 = new Client();
         this.client2.setName(name2);
-        this.client2.setSurname(surname2);
-        this.client2.setAge(age2);
+        this.client2.setExtraInformations(surname2);
         this.client2.setEmail(email2);
         this.client2.setCreated(created2);
         this.clientRepository.save(this.client2);

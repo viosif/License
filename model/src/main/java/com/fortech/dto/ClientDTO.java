@@ -13,8 +13,7 @@ import java.util.List;
 public class ClientDTO extends BaseDTO<Client> {
 
     private String name;
-    private String surname;
-    private int age;
+    private String extraInformations;
     private String email;
     private Date created = new Date();
     private List<LicenseDTO> license = new ArrayList<>();
@@ -22,10 +21,9 @@ public class ClientDTO extends BaseDTO<Client> {
     public ClientDTO() {
     }
 
-    public ClientDTO(String name, String surname, int age, String email, List<LicenseDTO> license) {
+    public ClientDTO(String name, String extraInformations, String email, List<LicenseDTO> license) {
         this.name = name;
-        this.surname = surname;
-        this.age = age;
+        this.extraInformations = extraInformations;
         this.email = email;
         this.license = license;
     }
@@ -34,8 +32,7 @@ public class ClientDTO extends BaseDTO<Client> {
     public String toString() {
         return "{" +
                 ", name=\"" + name + '\"' +
-                ", surname=\"" + surname + '\"' +
-                ", age=" + age +
+                ", extraInformations=\"" + extraInformations + '\"' +
                 ", email=\"" + email + '\"' +
                 ", created=\"" + created.getTime() + '\"' +
                 '}';
@@ -49,21 +46,15 @@ public class ClientDTO extends BaseDTO<Client> {
         this.name = name;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getExtraInformations() {
+        return extraInformations;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setExtraInformations(String extraInformations) {
+        this.extraInformations = extraInformations;
     }
 
-    public int getAge() {
-        return age;
-    }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
 
     public String getEmail() {
         return email;
@@ -92,8 +83,7 @@ public class ClientDTO extends BaseDTO<Client> {
     public Client toEntity() {
         Client client = new Client();
         client.setName(this.name);
-        client.setSurname(this.surname);
-        client.setAge(this.age);
+        client.setExtraInformations(this.extraInformations);
         client.setEmail(this.email);
         List<License> licenseList = new ArrayList<>();
         this.license.forEach(license1 -> {

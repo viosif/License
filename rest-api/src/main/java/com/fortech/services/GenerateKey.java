@@ -36,7 +36,7 @@ public class GenerateKey {
     public static Client clientDTOToEntity(ClientDTO clientDTO) {
         Client client = new Client();
         client.setName(clientDTO.getName());
-        client.setSurname(clientDTO.getSurname());
+        client.setExtraInformations(clientDTO.getExtraInformations());
         client.setAge(clientDTO.getAge());
         client.setEmail(clientDTO.getEmail());
         List<License> licenseList = new ArrayList<>();
@@ -57,7 +57,7 @@ public class GenerateKey {
     public static ClientDTO clientToDto(Client client) {
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setName(client.getName());
-        clientDTO.setSurname(client.getSurname());
+        clientDTO.setExtraInformations(client.getExtraInformations());
         clientDTO.setAge(client.getAge());
         clientDTO.setEmail(client.getEmail());
         List<LicenseDTO> licenseDTOS = new ArrayList<>();

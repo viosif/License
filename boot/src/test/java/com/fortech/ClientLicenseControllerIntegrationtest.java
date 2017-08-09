@@ -65,11 +65,11 @@ public class ClientLicenseControllerIntegrationtest {
     private Client client1;
     private Client client2;
     private String name1 = "name1";
-    private String surname1 = "surname1";
+    private String extraInformations1 = "extraInformations1";
     private int age1 = 10;
     private String email1 = "email1@email.com";
     private String name2 = "name2";
-    private String surname2 = "surname2";
+    private String extraInformations2 = "extraInformations2";
     private int age2 = 20;
     private String email2 = "email2@email.com";
 
@@ -104,14 +104,12 @@ public class ClientLicenseControllerIntegrationtest {
 
         this.client1 = new Client();
         this.client1.setName(name1);
-        this.client1.setSurname(surname1);
-        this.client1.setAge(age1);
+        this.client1.setExtraInformations(extraInformations1);
         this.client1.setEmail(email1);
 
         this.client2 = new Client();
         this.client2.setName(name2);
-        this.client2.setSurname(surname2);
-        this.client2.setAge(age2);
+        this.client2.setExtraInformations(extraInformations2);
         this.client2.setEmail(email2);
 
         this.license1 = new License();
@@ -162,8 +160,7 @@ public class ClientLicenseControllerIntegrationtest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].name", Matchers.is(name1)))
-                .andExpect(jsonPath("$[0].surname", Matchers.is(surname1)))
-                .andExpect(jsonPath("$[0].age", Matchers.is(age1)))
+                .andExpect(jsonPath("$[0].extraInformations", Matchers.is(extraInformations1)))
                 .andExpect(jsonPath("$[0].email", Matchers.is(email1)))
                 .andExpect(jsonPath("$[0].license[0].licenseType", Matchers.is(licenseType1.toString())))
                 .andExpect(jsonPath("$[0].license[0].endDate", Matchers.is(endDate1.getTime())))
@@ -174,8 +171,7 @@ public class ClientLicenseControllerIntegrationtest {
                 .andExpect(jsonPath("$[0].license[1].licenseKey", Matchers.is(license2.getLicenseKey())))
                 .andExpect(jsonPath("$[0].license[1].keyStatus", Matchers.is(keyStatus2.toString())))
                 .andExpect(jsonPath("$[1].name", Matchers.is(name2)))
-                .andExpect(jsonPath("$[1].surname", Matchers.is(surname2)))
-                .andExpect(jsonPath("$[1].age", Matchers.is(age2)))
+                .andExpect(jsonPath("$[1].extraInformations", Matchers.is(extraInformations2)))
                 .andExpect(jsonPath("$[1].email", Matchers.is(email2)))
                 .andExpect(jsonPath("$[1].license[0].licenseType", Matchers.is(licenseType3.toString())))
                 .andExpect(jsonPath("$[1].license[0].endDate", Matchers.is(endDate3.getTime())))
@@ -193,8 +189,7 @@ public class ClientLicenseControllerIntegrationtest {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", "name1");
-        jsonObject.put("surname", "surname1");
-        jsonObject.put("age", "87");
+        jsonObject.put("extraInformations", "extraInformations1");
         jsonObject.put("email", "email3@email.com");
 
         this.mockMvc.perform(post("/client/")
@@ -203,8 +198,7 @@ public class ClientLicenseControllerIntegrationtest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", Matchers.is("name1")))
-                .andExpect(jsonPath("$.surname", Matchers.is("surname1")))
-                .andExpect(jsonPath("$.age", Matchers.is(87)))
+                .andExpect(jsonPath("$.extraInformations", Matchers.is("extraInformations1")))
                 .andExpect(jsonPath("$.email", Matchers.is("email3@email.com")))
                 .andDo(print()).andReturn();
     }
@@ -218,8 +212,7 @@ public class ClientLicenseControllerIntegrationtest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", Matchers.is(client1.getName())))
-                .andExpect(jsonPath("$.surname", Matchers.is(client1.getSurname())))
-                .andExpect(jsonPath("$.age", Matchers.is(client1.getAge())))
+                .andExpect(jsonPath("$.extraInformations", Matchers.is(client1.getExtraInformations())))
                 .andExpect(jsonPath("$.email", Matchers.is(client1.getEmail())))
                 .andDo(print()).andReturn();
     }
@@ -232,8 +225,7 @@ public class ClientLicenseControllerIntegrationtest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name", Matchers.is(name1)))
-                .andExpect(jsonPath("$[0].surname", Matchers.is(surname1)))
-                .andExpect(jsonPath("$[0].age", Matchers.is(age1)))
+                .andExpect(jsonPath("$[0].extraInformations", Matchers.is(extraInformations1)))
                 .andExpect(jsonPath("$[0].email", Matchers.is(email1)))
                 .andExpect(jsonPath("$[0].license[0].licenseType", Matchers.is(licenseType1.toString())))
                 .andExpect(jsonPath("$[0].license[0].endDate", Matchers.is(endDate1.getTime())))
@@ -294,8 +286,7 @@ public class ClientLicenseControllerIntegrationtest {
                 .param("size",String.valueOf(10))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content[0].name", Matchers.is("varga20")))
-                .andExpect(jsonPath("$.content[0].surname", Matchers.is("iosif20")))
-                .andExpect(jsonPath("$.content[0].age", Matchers.is(20)))
+                .andExpect(jsonPath("$.content[0].extraInformations", Matchers.is("iosif20")))
                 .andExpect(jsonPath("$.content[0].email", Matchers.is("email20@email.com")))
                 .andExpect(jsonPath("$.content[0].license[0].licenseType", Matchers.is("TRIAL")))
                 .andExpect(jsonPath("$.content[0].license[0].endDate", Matchers.is(1500015104410L)))
@@ -332,8 +323,7 @@ public class ClientLicenseControllerIntegrationtest {
                 .param("email",String.valueOf("email1"))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content[0].name", Matchers.is("varga1")))
-                .andExpect(jsonPath("$.content[0].surname", Matchers.is("iosif1")))
-                .andExpect(jsonPath("$.content[0].age", Matchers.is(1)))
+                .andExpect(jsonPath("$.content[0].extraInformations", Matchers.is("iosif1")))
                 .andExpect(jsonPath("$.content[0].email", Matchers.is("email1@email.com")))
                 .andExpect(jsonPath("$.content[0].license[0].licenseType", Matchers.is("TRIAL")))
                 .andExpect(jsonPath("$.content[0].license[0].endDate", Matchers.is(1500015104410L)))
@@ -376,8 +366,7 @@ public class ClientLicenseControllerIntegrationtest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", Matchers.is(name1)))
-                .andExpect(jsonPath("$.surname", Matchers.is(surname1)))
-                .andExpect(jsonPath("$.age", Matchers.is(age1)))
+                .andExpect(jsonPath("$.extraInformations", Matchers.is(extraInformations1)))
                 .andExpect(jsonPath("$.email", Matchers.is(email1)))
                 .andExpect(jsonPath("$.license[0].licenseType", Matchers.is(licenseType1.toString())))
                 .andExpect(jsonPath("$.license[0].endDate", Matchers.is(endDate1.getTime())))
@@ -404,8 +393,7 @@ public class ClientLicenseControllerIntegrationtest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", Matchers.is(name1)))
-                .andExpect(jsonPath("$.surname", Matchers.is(surname1)))
-                .andExpect(jsonPath("$.age", Matchers.is(age1)))
+                .andExpect(jsonPath("$.extraInformations", Matchers.is(extraInformations1)))
                 .andExpect(jsonPath("$.email", Matchers.is(email1)))
                 .andExpect(jsonPath("$.license[0].licenseType", Matchers.is(licenseType2.toString())))
                 .andExpect(jsonPath("$.license[0].endDate", Matchers.is(endDate2.getTime())))

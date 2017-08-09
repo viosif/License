@@ -27,12 +27,8 @@ public class Client {
     private String name;
 
     @NotNull
-    @Column(name = "surname")
-    private String surname;
-
-    @NotNull
-    @Column(name = "age")
-    private int age;
+    @Column(name = "extraInformations")
+    private String extraInformations;
 
     @NotNull
     @Column(name = "email", unique = true)
@@ -48,10 +44,9 @@ public class Client {
     public Client() {
     }
 
-    public Client(String name, String surname, int age, String email, List<License> license) {
+    public Client(String name, String extraInformations, String email, List<License> license) {
         this.name = name;
-        this.surname = surname;
-        this.age = age;
+        this.extraInformations = extraInformations;
         this.email = email;
         this.license = license;
     }
@@ -61,8 +56,7 @@ public class Client {
         return "{" +
                 "id=" + id +
                 ", name=\"" + name + '\"' +
-                ", surname=\"" + surname + '\"' +
-                ", age=" + age +
+                ", extraInformations=\"" + extraInformations + '\"' +
                 ", email=\"" + email + '\"' +
                 ", created=\"" + created.getTime() + '\"' +
                 '}';
@@ -84,20 +78,12 @@ public class Client {
         this.name = name;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getExtraInformations() {
+        return extraInformations;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
+    public void setExtraInformations(String extraInformations) {
+        this.extraInformations = extraInformations;
     }
 
     public String getEmail() {
@@ -127,8 +113,7 @@ public class Client {
     public ClientDTO toDto() {
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setName(this.name);
-        clientDTO.setSurname(this.surname);
-        clientDTO.setAge(this.age);
+        clientDTO.setExtraInformations(this.extraInformations);
         clientDTO.setEmail(this.email);
         List<LicenseDTO> licenseDTOS = new ArrayList<>();
         this.license.forEach(license1 -> {
